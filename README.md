@@ -1,2 +1,2 @@
 # tandd
-TestAndDemo
+tandd == TestAndDemo
