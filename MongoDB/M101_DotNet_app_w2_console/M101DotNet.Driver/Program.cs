@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -13,7 +14,14 @@ namespace M101DotNet.Driver
         private const string COLLECTION_NAME    = "names";
         #endregion
 
-        static void Main(string[] args)
+        private static readonly Dictionary<string, object> newObj = new Dictionary<string, object>
+            {
+                { "_id",            ObjectId.GenerateNewId() },
+                { "THE_NEW_ROW",    "Document 1234567890" }
+            };
+
+
+        public static void Main(string[] args)
         {
             Console.WriteLine("[BEGIN]");
             MainAsync(args).GetAwaiter().GetResult();
@@ -23,14 +31,14 @@ namespace M101DotNet.Driver
             Console.ReadLine();
         }
 
-        static async Task MainAsync(string[] args)
+        private static async Task MainAsync(string[] args)
         {
             var client = new MongoClient(CONNECTION_STR);
             IMongoDatabase db = client.GetDatabase(DB_NAME);
             var collection = db.GetCollection<BsonDocument>(COLLECTION_NAME);
 
             await CountAsync(collection);
-            InsertOneAsync(collection).Wait();
+            InsertOne(collection);
             await CountAsync(collection);
         }
 
@@ -38,7 +46,7 @@ namespace M101DotNet.Driver
         /// <summary>
         /// Count documents (SQL=rows) in the collection (SQL=table).
         /// </summary>
-        static async Task CountAsync(IMongoCollection<BsonDocument> collection)
+        private static async Task CountAsync(IMongoCollection<BsonDocument> collection)
         {
             long count = await collection.CountAsync(new BsonDocument());
             Console.WriteLine("== collection.Count = {0}", count);
@@ -47,12 +55,16 @@ namespace M101DotNet.Driver
         /// <summary>
         /// Insert a new single document (SQL=row) in the collection (SQL=table).
         /// </summary>
-        static async Task InsertOneAsync(IMongoCollection<BsonDocument> collection)
+        private static void InsertOne(IMongoCollection<BsonDocument> collection)
         {
             Console.WriteLine("++ Insert a new single document (SQL=row) in the collection (SQL=table).");
-            var document = new BsonDocument { {"_id", ObjectId.GenerateNewId()}, { "THE NEW ROW", "Document 1234567890" } };
-            var res = await collection.InsertOneAsync(document);
 
+            //var document = new BsonDocument { {"_id", ObjectId.GenerateNewId()}, { "THE NEW ROW", "Document 1234567890" } };
+            var document = new BsonDocument().AddRange(newObj);
+            Task t = collection.InsertOneAsync(document);
+            t.Wait();
+
+            Console.WriteLine("  status = " + t.Status);
         }
         #endregion
     }
