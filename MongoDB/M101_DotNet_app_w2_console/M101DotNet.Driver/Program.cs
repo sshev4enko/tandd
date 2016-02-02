@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using M101DotNet.Driver.Model;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 namespace M101DotNet.Driver
@@ -33,16 +36,49 @@ namespace M101DotNet.Driver
 
         private static async Task MainAsync(string[] args)
         {
+            OutputBsonDocument();
+
             var client = new MongoClient(CONNECTION_STR);
             IMongoDatabase db = client.GetDatabase(DB_NAME);
             var collection = db.GetCollection<BsonDocument>(COLLECTION_NAME);
 
-            await CountAsync(collection);
-            InsertOne(collection);
-            await CountAsync(collection);
+            #region TEST: Basic DB operations
+            // await CountAsync(collection);
+            // InsertOne(collection);
+            // await CountAsync(collection);
+            #endregion
+
+            #region TEST: POCO objects
+            PocoPlain();
+            #endregion
         }
 
-        #region Test methods
+
+        #region Test Methods
+
+        /// <summary>
+        /// Create & Output simple BSON document obj (SQL=row).
+        /// </summary>
+        private static void OutputBsonDocument()
+        {
+            var doc = new BsonDocument
+            {
+                { "nickname", "JohnnyB"}
+            };
+
+            doc.Add("age", 66);
+            doc["profession"] = "hacker";
+
+            Console.WriteLine(doc);
+
+            bool res = doc.Contains("age");
+            BsonElement element;
+            if (doc.TryGetElement("nickname", out element))
+            {
+                Console.WriteLine(".Name = {0}, .Value = {1} \n\n", element.Name, element.Value);
+            }
+        }
+
         /// <summary>
         /// Count documents (SQL=rows) in the collection (SQL=table).
         /// </summary>
@@ -66,6 +102,28 @@ namespace M101DotNet.Driver
 
             Console.WriteLine("  status = " + t.Status);
         }
+
+        private static void PocoPlain()
+        {
+            var personPlain = new PersonPlain
+            {
+                Name = "Benny",
+                Age = 33,
+                Colors = new List<string> { "red", "blue" },
+                Pets = new List<PetPlain>
+                    {
+                        new PetPlain { Name = "Fluffy",     Type = "dog" },
+                        new PetPlain { Name = "Garfield",   Type = "cat" }
+                    },
+                ExtraElements = new BsonDocument("additionalName", "Name2")
+            };
+
+            using (var writer = new JsonWriter(Console.Out))
+            {
+                BsonSerializer.Serialize(writer, personPlain);
+            }
+        }
+
         #endregion
     }
 }
