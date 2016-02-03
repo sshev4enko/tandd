@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Management.Instrumentation;
+using System.Threading;
 using System.Threading.Tasks;
 using M101DotNet.Driver.Model;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Clusters;
 
 namespace M101DotNet.Driver
 {
@@ -15,19 +19,31 @@ namespace M101DotNet.Driver
         private const string CONNECTION_STR     = @"mongodb://localhost:27017";
         private const string DB_NAME            = "test";
         private const string COLLECTION_NAME    = "names";
-        #endregion
 
         private static readonly Dictionary<string, object> newObj = new Dictionary<string, object>
             {
                 { "_id",            ObjectId.GenerateNewId() },
                 { "THE_NEW_ROW",    "Document 1234567890" }
             };
+        #endregion
 
 
         public static void Main(string[] args)
         {
             Console.WriteLine("[BEGIN]");
-            MainAsync(args).GetAwaiter().GetResult();
+
+            try
+            {
+                MainAsync(args).GetAwaiter().GetResult();
+            }
+            catch (MongoConnectionException ex)
+            {
+                Console.WriteLine("[EXCEPTION] MongoConnectionException - " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[EXCEPTION] " + ex.GetType() + " : " + ex.Message);
+            }
 
             Console.WriteLine();
             Console.WriteLine("[END] Press Enter...");
@@ -36,9 +52,23 @@ namespace M101DotNet.Driver
 
         private static async Task MainAsync(string[] args)
         {
+            #region TEST: BSON documents
             OutputBsonDocument();
+            #endregion
 
+            int repeats = 0;
             var client = new MongoClient(CONNECTION_STR);
+
+            // This while loop is to allow us to detect if we are connected to the MongoDB server (Is server alive ?)
+            while (client.Cluster.Description.State == ClusterState.Disconnected)
+            {
+                Thread.Sleep(250);
+                if (repeats++ >= 5)
+                {
+                    throw new InstanceNotFoundException("Unable to connect to the MongoDB server. Please make sure that '" + client.Settings.Server.Host + "' is running");
+                }
+            }
+
             IMongoDatabase db = client.GetDatabase(DB_NAME);
             var collection = db.GetCollection<BsonDocument>(COLLECTION_NAME);
 
@@ -49,7 +79,7 @@ namespace M101DotNet.Driver
             #endregion
 
             #region TEST: POCO objects
-            PocoPlain();
+            PocoPlainSerialization();
             #endregion
         }
 
@@ -103,9 +133,22 @@ namespace M101DotNet.Driver
             Console.WriteLine("  status = " + t.Status);
         }
 
-        private static void PocoPlain()
+        private static void PocoPlainSerialization()
         {
-            var personPlain = new PersonPlain
+            // A convention that sets the element name the same as the class-member name with the first character lower cased.
+            var conventionPack = new ConventionPack();
+            conventionPack.Add(new CamelCaseElementNameConvention());
+            ConventionRegistry.Register("camelCase", conventionPack, type => type.IsPublic);
+
+            // The same you can achieve with using of attributes. See class Person.
+            BsonClassMap.RegisterClassMap<PersonPlain>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapMember(c => c.Name).SetElementName("new_name");
+                cm.MapMember(c => c.Age).SetIgnoreIfNull(true);
+            });
+
+            var person = new PersonPlain
             {
                 Name = "Benny",
                 Age = 33,
@@ -120,7 +163,7 @@ namespace M101DotNet.Driver
 
             using (var writer = new JsonWriter(Console.Out))
             {
-                BsonSerializer.Serialize(writer, personPlain);
+                BsonSerializer.Serialize(writer, person);
             }
         }
 

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace M101DotNet.Driver.Model
 {
     /// <summary>
     /// Plain Old CLR Object (POCO).
     /// </summary>
-    class PersonPlain
+    public class PersonPlain
     {
         public ObjectId Id { get; set; }
         public string Name { get; set; }
@@ -20,7 +20,24 @@ namespace M101DotNet.Driver.Model
 
     ///////////////////////////////////////////////////////////////////////////
 
-    class Person
+    /// <summary>
+    /// The same POCO but spiced with Mongo-BSON attributes to modify output.
+    /// </summary>
+    public class Person
     {
+        public ObjectId Id { get; set; }
+
+        [BsonElement("short_name")]
+        public string Name { get; set; }
+
+        [BsonRepresentation(BsonType.String)]
+        public int Age { get; set; }
+
+        public List<string> Colors { get; set; }
+
+        public List<Pet> Pets { get; set; }
+
+        [BsonIgnore]
+        public BsonDocument ExtraElements { get; set; }
     }
 }
