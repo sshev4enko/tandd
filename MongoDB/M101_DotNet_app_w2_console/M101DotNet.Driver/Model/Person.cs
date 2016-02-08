@@ -10,7 +10,7 @@ namespace M101DotNet.Driver.Model
     /// </summary>
     public class PersonPlain
     {
-        public ObjectId Id { get; set; }
+        public ObjectId Id { get; set; } // Mapped to '_id' field.
         public string Name { get; set; }
         public int Age { get; set; }
         public List<string> Colors { get; set; }
@@ -21,11 +21,11 @@ namespace M101DotNet.Driver.Model
     ///////////////////////////////////////////////////////////////////////////
 
     /// <summary>
-    /// The same POCO but spiced with Mongo-BSON attributes to modify output.
+    /// [MONGODB-DEMO] The same POCO but spiced with Mongo-BSON attributes to modify output.
     /// </summary>
     public class Person
     {
-        public ObjectId Id { get; set; }
+        public ObjectId Id { get; set; } // Mapped to '_id' field.
 
         [BsonElement("short_name")]
         public string Name { get; set; }
