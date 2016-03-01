@@ -15,7 +15,7 @@ namespace M101DotNet.Driver.Model
         public int Age { get; set; }
         public List<string> Colors { get; set; }
         public List<PetPlain> Pets { get; set; }
-        public BsonDocument ExtraElements{ get; set; }
+        public BsonDocument ExtraElements{ get; set; } // Schemaless - you can have here an extra data fields.
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@ namespace M101DotNet.Driver.Model
     /// </summary>
     public class Person
     {
-        public ObjectId Id { get; set; } // Mapped to '_id' field.
+        public ObjectId Id { get; set; } // ==> Mapped to '_id' field.
 
         [BsonElement("short_name")]
         public string Name { get; set; }
