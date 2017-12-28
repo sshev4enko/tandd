@@ -11,38 +11,16 @@ function showHello(divName: string, name: string) {
     const elt = document.getElementById(divName);
     elt.innerText = `Hello from ${name}`;
 }
-
+// -----------------------------------------------------------------------------------------------
 
 // TASKS
-enum Category { JavaScript, CSS, HTML, TypeScript, Angular2 }
 
-interface DamageLogger {
-    (reason: string): void;
-}
+// TASK - 15
+import { Category } from "./enums";
+import { Book, Logger, Author, Librarian } from "./interfaces";
+import { UniversityLibrarian, ReferenceItem } from "./classes";
+import RefBook from "./encyclopedia";
 
-interface Book {
-    id: number;
-    title: string;
-    author: string;
-    available: boolean;
-    category: Category;
-    pages?: number;
-    markDamaged?: DamageLogger;
-}
-
-interface Person {
-    name: string;
-    email: string;
-}
-
-interface Author extends Person {
-    numBooksPublished: number;
-}
-
-interface Librarian extends Person {
-    department: string;
-    assistCustomer: (custName: string) => void;
-}
 
 function getAllBooks(): Book[] {
     const books = [
@@ -156,16 +134,6 @@ function printBook(book: Book): void {
     console.log(`"${book.title}" by ${book.author}`);
 }
 
-class UniversityLibrarian implements Librarian {
-    name: string;
-    email: string;
-    department: string;
-
-    assistCustomer(name: string): void {
-        console.log(`${this.name} is assist ${name}.`);
-    }
-}
-
 
 
 
@@ -225,15 +193,15 @@ class UniversityLibrarian implements Librarian {
 // myBook.markDamaged("missing book cover");
 
 // TASK - 08
-// const logDamage: DamageLogger = (reason: string) => console.log(reason);
-// logDamage("coffee stains");
+const logDamage: Logger = (reason: string) => console.log(reason);
+logDamage("coffee stains");
 
 // TASK - 09
-const favoriteAuthor: Author = {
-    email: "Ann@gmail.com",
-    name: "Ann",
-    numBooksPublished: 3
-};
+// const favoriteAuthor: Author = {
+//     email: "Ann@gmail.com",
+//     name: "Ann",
+//     numBooksPublished: 3
+// };
 // const favoriteLibrarian: Librarian = {
 //     email: "Boris@gmail.com",
 //     name: "Boris",
@@ -242,8 +210,26 @@ const favoriteAuthor: Author = {
 // };
 
 // TASK - 10
-const favoriteLibrarian: Librarian = new UniversityLibrarian();
-favoriteLibrarian.name = "Ann";
-favoriteLibrarian.assistCustomer("Boris");
+// const favoriteLibrarian: Librarian = new UniversityLibrarian();
+// favoriteLibrarian.name = "Ann";
+// favoriteLibrarian.assistCustomer("Boris");
 
+// TASK - 11
+// const ref: ReferenceItem = new ReferenceItem("CHIP", 1985);
+// ref.printItem();
+// ref.publisher = "Random Publisher";
+// console.log(ref.publisher);
 
+// TASK - 12
+// const refBook = new Encyclopedia("WorldPedia", 1200, 4);
+// const refBook: Encyclopedia = new Encyclopedia("WorldPedia", 1200, 4);
+// const refBook: ReferenceItem = new Encyclopedia("WorldPedia", 1200, 4);
+// refBook.printItem();
+
+// TASK - 13
+// const refBook = new Encyclopedia("TitleHere", 1999, 8);
+// refBook.printCitation();
+
+// TASK - 16
+const refBook = new RefBook("TitleHere", 1999, 8);
+refBook.printCitation();

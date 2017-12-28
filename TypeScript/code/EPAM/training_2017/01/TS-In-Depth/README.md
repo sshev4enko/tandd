@@ -13,7 +13,10 @@
     $ npm install -g tslint
     >> TSLint rules config is here: \TS-In-Depth\tslint.json
     ```
-  - aaa
+  - COMPILATION to single JS file:
+    ```sh
+    tsc --outFile bundle.js app.ts --target ES5
+    ```
   - aaaa
   - aaaaaaaa
 
@@ -27,7 +30,10 @@
 
 #### NOTES:
 - backtick == Template String from ES2015 (`My name: ${obj.name}`)
-- v
+- Triple-Slash References
+    ```sh
+    /// <reference path="membership.ts" />
+    ```
 - v
 - v
 - v
