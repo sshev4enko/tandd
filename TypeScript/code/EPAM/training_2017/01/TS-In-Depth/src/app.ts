@@ -17,9 +17,11 @@ function showHello(divName: string, name: string) {
 
 // TASK - 15
 import { Category } from "./enums";
-import { Book, Logger, Author, Librarian } from "./interfaces";
+import { Book, Logger, Author, Librarian, Magazine } from "./interfaces";
 import { UniversityLibrarian, ReferenceItem } from "./classes";
 import RefBook from "./encyclopedia";
+import { purge } from "./lib/utility-functions";
+import Shelf from "./shelf";
 
 
 function getAllBooks(): Book[] {
@@ -193,8 +195,8 @@ function printBook(book: Book): void {
 // myBook.markDamaged("missing book cover");
 
 // TASK - 08
-const logDamage: Logger = (reason: string) => console.log(reason);
-logDamage("coffee stains");
+// const logDamage: Logger = (reason: string) => console.log(reason);
+// logDamage("coffee stains");
 
 // TASK - 09
 // const favoriteAuthor: Author = {
@@ -210,9 +212,9 @@ logDamage("coffee stains");
 // };
 
 // TASK - 10
-// const favoriteLibrarian: Librarian = new UniversityLibrarian();
-// favoriteLibrarian.name = "Ann";
-// favoriteLibrarian.assistCustomer("Boris");
+const favoriteLibrarian = new UniversityLibrarian();
+favoriteLibrarian.name = "Ann";
+favoriteLibrarian.assistCustomer("Boris");
 
 // TASK - 11
 // const ref: ReferenceItem = new ReferenceItem("CHIP", 1985);
@@ -231,5 +233,46 @@ logDamage("coffee stains");
 // refBook.printCitation();
 
 // TASK - 16
-const refBook = new RefBook("TitleHere", 1999, 8);
-refBook.printCitation();
+// const refBook = new RefBook("TitleHere", 1999, 8);
+// refBook.printCitation();
+
+// TASK - 17
+// const inventory: Array<Book> = [
+//     { id: 10, title: "The C Programming Language", author: "K & R", available: true, category: Category.Software },
+//     { id: 11, title: "Code Complete", author: "Steve McConnell", available: true, category: Category.Software },
+//     { id: 12, title: "8-Bit Graphics with Cobol", author: "A. B.", available: true, category: Category.Software },
+//     { id: 13, title: "Cool autoexec.bat Scripts!", author: "C. D.", available: true, category: Category.Software }
+
+// ];
+// const purgedBooks: Array<Book> = purge<Book>(inventory);
+// console.log(purgedBooks);
+// console.log(purge<number>([1, 2, 3, 4]));
+
+// TASK - 18
+// const bookShelf: Shelf<Book> = new Shelf<Book>();
+// inventory.forEach(book => bookShelf.add(book));
+// const firstBook: Book = bookShelf.getFirst();
+// console.log(firstBook);
+
+// const magazines: Array<Magazine> = [
+//     { title: "Programming Language Monthly", publisher: "Code Mags" },
+//     { title: "Literary Fiction Quarterly", publisher: "College Press" },
+//     { title: "Five Points", publisher: "GSU" }
+// ];
+// const magazineShelf: Shelf<Magazine> = new Shelf<Magazine>();
+// magazines.forEach(mag => magazineShelf.add(mag));
+// const firstMagazine: Magazine = magazineShelf.getFirst();
+// console.log(firstMagazine);
+
+// TASK - 19
+// magazineShelf.printTitles();
+// const mag = magazineShelf.find("Five Points");
+// console.log(mag);
+
+// TASK - 21
+favoriteLibrarian.assistFaculty = () => console.log("assistFaculty");
+favoriteLibrarian.teachCommunity = () => console.log("teachCommunity");
+
+
+
+
