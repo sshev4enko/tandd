@@ -20,121 +20,8 @@ import { Category } from "./enums";
 import { Book, Logger, Author, Librarian, Magazine } from "./interfaces";
 import { UniversityLibrarian, ReferenceItem } from "./classes";
 import RefBook from "./encyclopedia";
-import { purge } from "./lib/utility-functions";
+import { purge, getBooksByCategoryPromise, logSearchResults } from "./lib/utility-functions";
 import Shelf from "./shelf";
-
-
-function getAllBooks(): Book[] {
-    const books = [
-            { id: 1, title: "Refactoring JavaScript", author: "Evan Burchard", available: true, category: Category.JavaScript},
-            { id: 2, title: "JavaScript Testing", author: "Liang Yuxian Eugene", available: false, category: Category.JavaScript },
-            { id: 3, title: "CSS Secrets", author: "Lea Verou", available: true, category: Category.CSS },
-            { id: 4, title: "Mastering JavaScript Object-Oriented Programming", author: "Andrea Chiarelli", available: true, category: Category.JavaScript }
-        ];
-
-    return books;
-}
-
-function logFirstAvailable(books: Array<any> = getAllBooks()): void {
-    const numberOfBooks: number = books.length;
-    let firstAvailable: string = "";
-
-    for (let currentBook of books) {
-        if (currentBook.available) {
-            firstAvailable = currentBook.title;
-            break;
-        }
-    }
-
-    console.log(`Total Books: ${numberOfBooks}`);
-    console.log(`First Available: ${firstAvailable}`);
-}
-
-function getBookTitleByCategory(categoryFilter: Category = Category.JavaScript): Array<string> {
-    console.log(`Getting books in category: ${Category[categoryFilter]}`);
-
-    const allBooks: Array<any> = getAllBooks();
-    const filteredTitles: string[] = [];
-
-    for (let currentBook of allBooks) {
-        if (currentBook.category === categoryFilter) {
-            filteredTitles.push(currentBook.title);
-        }
-    }
-
-    return filteredTitles;
-}
-
-function logBookTitles(titles: string[]): void {
-    for (let title of titles) {
-        console.log(title);
-    }
-}
-
-function getBookById(id: number): Book | undefined {
-    const allBooks = getAllBooks();
-
-    return allBooks.find(book => book.id === id);
-}
-
-function createCustomerId(name: string, id: number): string {
-    return `${name}${id}`;
-}
-
-function createCustomer(name: string, age?: number, city?: string): void {
-    console.log(`Creating customer ${name}`);
-
-    if (age) {
-        console.log(`Age: ${age}`);
-    }
-
-    if (city) {
-        console.log(`City: ${city}`);
-    }
-}
-
-function checkoutBooks(customer: string, ...bookIds: number[]): string[] {
-    console.log(`Checking out books for ${customer}`);
-
-    const bookTitles: string[] = [];
-    for (let id of bookIds) {
-        let book = getBookById(id);
-        if (book && book.available) {
-            bookTitles.push(book.title);
-        }
-    }
-
-    return bookTitles;
-}
-
-function getTitles(author: string): string[];
-function getTitles(available: boolean): string[];
-function getTitles(property: any): string[] {
-    const allBooks = getAllBooks();
-    const bookTitles: string[] = [];
-
-    if (typeof(property) === "string") {
-        for (let book of allBooks) {
-            if (book.author === property) {
-                bookTitles.push(book.title);
-            }
-        }
-    }
-
-    if (typeof(property) === "boolean") {
-        for (let book of allBooks) {
-            if (book.available === property) {
-                bookTitles.push(book.title);
-            }
-        }
-    }
-
-    return bookTitles;
-}
-
-function printBook(book: Book): void {
-    console.log(`"${book.title}" by ${book.author}`);
-}
 
 
 
@@ -212,9 +99,9 @@ function printBook(book: Book): void {
 // };
 
 // TASK - 10
-const favoriteLibrarian = new UniversityLibrarian();
-favoriteLibrarian.name = "Ann";
-favoriteLibrarian.assistCustomer("Boris");
+// const favoriteLibrarian = new UniversityLibrarian();
+// favoriteLibrarian.name = "Ann";
+// favoriteLibrarian.assistCustomer("Boris");
 
 // TASK - 11
 // const ref: ReferenceItem = new ReferenceItem("CHIP", 1985);
@@ -270,9 +157,62 @@ favoriteLibrarian.assistCustomer("Boris");
 // console.log(mag);
 
 // TASK - 21
-favoriteLibrarian.assistFaculty = () => console.log("assistFaculty");
-favoriteLibrarian.teachCommunity = () => console.log("teachCommunity");
+// favoriteLibrarian.assistFaculty = () => console.log("assistFaculty");
+// favoriteLibrarian.teachCommunity = () => console.log("teachCommunity");
+
+// TASK - 22
+// console.log("begin");
+// getBooksByCategory(Category.JavaScript, logCategorySearch);
+// console.log("end");
+
+// TASK - 23
+// console.log("begin");
+// getBooksByCategoryPromise(Category.JavaScript)
+//     .then(titles => {
+//         console.log("Found titles");
+//         console.log(titles);
+//         return titles.length;
+//     })
+//     .then(numOfBooks => console.log(numOfBooks))
+//     .catch(reason => console.log(reason));
+// console.log("end");
+
+// TASK - 24
+console.log("Beginning search...");
+// logSearchResults(Category.JavaScript)
+//     .catch(reason => console.log(reason));
+console.log("Search submitted...");
 
 
 
 
+
+// ************************************************************************************************
+// TESTS TESTS TESTS
+const arr = { key: [10, 11, 12], key2: [40, 41, 42]};
+// arr.foo = "hello";
+
+for (let i in arr) {
+   console.log(i); // выведет "0", "1", "2", "foo"
+   let x = arr[i];
+   console.log(x);
+}
+
+const isOnNow = () => ({} > new Date()) && ({} < new Date());
+interface ITes {
+    listId: string;
+}
+let item: ITes;
+let listId: any;
+const bbb = (item.listId == listId);
+function getITes(): ITes {
+    return { listId: "sssssss" };
+}
+
+// for (let i of arr) {
+//    console.log(i); // выведет "3", "5", "7"
+// }
+
+// let bVal: boolean = false;
+let bVal = getITes();
+bVal = "sss";

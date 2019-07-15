@@ -17,7 +17,11 @@
     ```sh
     tsc --outFile bundle.js app.ts --target ES5
     ```
-  - aaaa
+  - Install package 'babel-polyfill'
+    ```sh
+    npm install babel-polyfill --save-dev
+    ```
+  - aaaaaaaa
   - aaaaaaaa
 
 // TERMINAL:
